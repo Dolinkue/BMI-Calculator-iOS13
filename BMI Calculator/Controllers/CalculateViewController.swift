@@ -10,6 +10,8 @@ import UIKit
 
 class CalculateViewController: UIViewController {
     
+    var calculatorBrain = CalculateBrain()
+    
     
     @IBOutlet weak var height: UILabel!
     @IBOutlet weak var weight: UILabel!
@@ -43,17 +45,24 @@ class CalculateViewController: UIViewController {
     
     @IBAction func calculatePressed(_ sender: UIButton) {
         
-        let height = heightSlaider.value
-        let weight = weightSlaider.value
         
-        var bmi = weight / (pow(height,2))
+        calculatorBrain.calculateBMI(height: heightSlaider.value, weight: weightSlaider.value)
         
-        self.performSegue(withIdentifier: "goToResult", sender: self)
+        
+        self.performSegue(withIdentifier: "goToResult", sender: self) // goToResult se creo en la conexion de los view
         
     
     
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToResult" {
+            let destinationVC = segue.destination as! ResultViewController // aca es la funcion que se implementa para ejecutar la segunda view, y se pone el if para confimara que sea esa porque pueden ser varias, y se debe poner as y clase para que se active 
+            destinationVC.bmiValue = calculatorBrain.getBMIValue()
+            destinationVC.advice = calculatorBrain.getAdvice()
+            destinationVC.color = calculatorBrain.getColor()
+        }
+    }
     
 }
 
